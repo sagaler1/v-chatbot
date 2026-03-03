@@ -55,7 +55,7 @@ export default function LoginPage() {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center text-gray-900">AI Chat</CardTitle>
           <CardDescription className="text-center">
-            Gunakan akun admin lo buat masuk.
+            Enter your information to login
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleLogin}>

@@ -14,8 +14,8 @@ const openai = new OpenAI({
 })
 
 // Model konfigurasi
-const PRIMARY_MODEL = 'gpt-4o'                    // Model utama yang mahal/pinter
-const CHEAP_MODEL = 'qwen/qwen-turbo'    // Model murah buat ringkas & judul
+const FREE_MODEL = 'upstage/solar-pro-3:free'     // Model free
+const CHEAP_MODEL = 'qwen/qwen-turbo'             // Model murah buat ringkas & judul
 
 // Helper untuk verifikasi token
 async function getAuthUser() {
@@ -58,7 +58,7 @@ async function backgroundTask(sessionId, messages, username) {
     // 2. SUMMARY (Jika total pesan di DB >= 4)
     if (total >= 4) {
       const summaryResponse = await openai.chat.completions.create({
-        model: 'upstage/solar-pro-3:free',
+        model: FREE_MODEL,
         messages: [
           { role: 'system', content: 'Ringkas percakapan ini dalam 1 paragraf agar konteks tetap terjaga. Fokus pada topik utama, informasi dan variabel penting yang sudah dibahas.' },
           { role: 'user', content: JSON.stringify(messages) }
@@ -127,10 +127,6 @@ export async function POST(request) {
       aiMessages = messages
     }
 
-    // Custom HTTP Request ke AI Provider
-    // const aiProviderUrl = process.env.AI_API_ENDPOINT
-    // const apiKey = process.env.AI_API_KEY
-
     // 3. Request ke AI Utama (Streaming)
     const response = await openai.chat.completions.create({
       model: model,
@@ -166,6 +162,93 @@ export async function POST(request) {
         }
       }
     })
+
+    // =======================================
+    // Alt. Custom HTTP Request ke AI Provider
+    // =======================================
+    //const aiProviderUrl = process.env.AI_API_ENDPOINT
+    //const apiKey = process.env.AI_API_KEY
+
+    //const aiResponse = await fetch(aiProviderUrl, {
+    //  method: 'POST',
+    //  headers: {
+    //    'Origin': `${process.env.AI_API_BODY_REFERER}`,
+    //    'Referer': `${process.env.AI_API_BODY_REFERER}`,
+    //    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:147.0) Gecko/20100101 Firefox/147.0',
+    //    'Accept': '*/*',
+    //    'Content-Type': 'application/json'
+    //  },
+    //  body: JSON.stringify({
+    //    args: {
+    //      messages: messages,
+    //      model: model || 'gemini-2.5-flash',
+    //      stream: true
+    //    },
+    //    auth_token: `${apiKey}`,
+    //    driver: 'ai-chat',
+    //    interface: `${process.env.AI_API_BODY_INTERFACE}`,
+    //    method: 'complete',
+    //    test_mode: true
+    //  }),
+    //})
+
+    //if (!aiResponse.ok) {
+    //  throw new Error('Gagal nge-hit provider AI')
+    //}
+
+    // Proses Streaming Data (NDJSON)
+    /*
+    const stream = new ReadableStream({
+      async start(controller) {
+        const reader = aiResponse.body.getReader()
+        const decoder = new TextDecoder('utf-8')
+        const encoder = new TextEncoder()
+        
+        let fullAiText = ''
+        let buffer = ''
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read()
+            if (done) break
+
+            const chunk = decoder.decode(value, { stream: true })
+            buffer += chunk
+
+            let start = 0
+            for (let end = 1; end <= buffer.length; end++) {
+              if (buffer[end - 1] === '}') {
+                const jsonStrCandidates = buffer.slice(start, end)
+                try {
+                  const obj = JSON.parse(jsonStrCandidates)
+                  if (obj.type === 'text' && obj.text) {
+                    fullAiText += obj.text
+                    controller.enqueue(encoder.encode(obj.text))
+                  }
+                  start = end
+                } catch (e) {
+                  // JSON parsial, abaikan dan lanjut kumpulkan karakter
+                }
+              }
+            }
+            buffer = buffer.slice(start)
+          }
+        } catch (err) {
+          console.error("Stream reader error:", err)
+        } finally {
+          // 4. Setelah stream selesai, simpan respon AI ke MySQL
+          if (fullAiText) {
+            await pool.query(
+              'INSERT INTO messages (username, role, content, model, session_id) VALUES (?, ?, ?, ?, ?)',
+              [user.username, 'assistant', fullAiText, model, sessionId]
+            );
+          }
+          controller.close()
+        }
+      }
+    })
+    // ====================================
+    */
 
     return new Response(stream, {
       headers: {

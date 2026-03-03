@@ -133,3 +133,8 @@
     @apply font-sans;
   }
 }
+
+body {
+  /*background: var(--background);*/
+  font-feature-settings: "ss03", "ss05";
+}
