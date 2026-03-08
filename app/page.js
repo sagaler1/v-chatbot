@@ -17,6 +17,7 @@ import {
   FileText,
   Zap,
 } from "lucide-react"
+import { IconCube } from "@tabler/icons-react"
 import { cn } from "@/lib/utils"
 import {
   DropdownMenu,
@@ -29,12 +30,12 @@ import {
 
 const AIModels = [
   { model: "openai/gpt-5.2", provider: "OpenAI", name: "GPT 5.2" },
-  { model: "anthropic/claude-opus-4-6", provider: "Anthropic", name: "Claude Opus 4.6" },
+  /*{ model: "anthropic/claude-opus-4-6", provider: "Anthropic", name: "Claude Opus 4.6" },
   { model: "anthropic/claude-sonnet-4-6", provider: "Anthropic", name: "Claude Sonnet 4.6" },
-  { model: "anthropic/claude-haiku-4-5", provider: "Anthropic", name: "Claude Haiku 4.5" },
-  { model: "google/gemini-3-flash-preview", provider: "Google", name: "Gemini 3 Flash" },
+  { model: "anthropic/claude-haiku-4-5", provider: "Anthropic", name: "Claude Haiku 4.5" },*/
+  { model: "google/gemini-3.1-flash-lite-preview", provider: "Google", name: "Gemini 3.1 Flash Lite" },
   { model: "google/gemini-2.5-flash", provider: "Google", name: "Gemini 2.5 Flash" },
-  { model: "google/gemini-2.0-flash", provider: "Google", name: "Gemini 2.0 Flash" },
+  { model: "qwen/qwen3.5-plus-02-15", provider: "Qwen", name: "Qwen 3.5 Plus" },
   { model: "qwen/qwen3.5-flash-02-23", provider: "Qwen", name: "Qwen 3.5 Flash" },
   { model: "x-ai/grok-4-1-fast-non-reasoning", provider: "xAI", name: "Grok 4.1 Fast NR" },
 ]
@@ -338,7 +339,7 @@ export default function Home() {
               </div>
             ) : (
               /* ── MESSAGES LIST ── */
-              <div className="pb-4">
+              <div className="pb-4 chat-container">
                 {messages.map((msg, index) => {
                   // Detect thinking state: last message, assistant, empty content, still loading
                   const isThinking =
@@ -402,10 +403,12 @@ export default function Home() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 rounded-sm"
+                    className="h-8 w-8 rounded-lg cursor-pointer"
                     disabled={isLoading}
                   >
-                    <Paperclip className="h-4 w-4 -rotate-45 text-gray-900" />
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="stroke-2 ">
+                      <path d="M10 9V15C10 16.1046 10.8954 17 12 17V17C13.1046 17 14 16.1046 14 15V7C14 4.79086 12.2091 3 10 3V3C7.79086 3 6 4.79086 6 7V15C6 18.3137 8.68629 21 12 21V21C15.3137 21 18 18.3137 18 15V8" stroke="currentColor"/>
+                    </svg>
                   </Button>
 
                   {/* Model Selector */}
@@ -414,10 +417,10 @@ export default function Home() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 gap-1.5 px-2 text-[11px] font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all rounded-md"
+                        className="h-8 gap-1.5 px-2 text-[11px] font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all rounded-md cursor-pointer"
                         disabled={isLoading}
                       >
-                        <Sparkles className="h-3.5 w-3.5 text-blue-500" />
+                        <IconCube className="h-4 w-4" />
                         <span className="text-gray-900">
                           {currentModelData ? currentModelData.name : "Unknown Model"}
                         </span>

@@ -88,7 +88,7 @@ export default function ChatBubble({ role, content, model, isThinking = false })
   return (
     <div
       className={cn(
-        "flex w-full gap-4 p-4 rounded-lg my-2",
+        "chat-bubble flex w-full gap-4 p-4 rounded-lg my-2",
         isUser ? "flex-row-reverse" : "bg-white"
       )}
     >
@@ -140,7 +140,7 @@ export default function ChatBubble({ role, content, model, isThinking = false })
             {isThinking ? (
               <ThinkingDots />
             ) : (
-              <div className="text-sm text-gray-700 leading-relaxed prose prose-sm max-w-none w-full prose-p:leading-relaxed prose-pre:m-0">
+              <div className="text-sm text-gray-700 leading-relaxed prose prose-sm max-w-none w-full prose-p:leading-relaxed prose-pre:m-0 prose-table:my-2">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{
@@ -149,7 +149,7 @@ export default function ChatBubble({ role, content, model, isThinking = false })
                     ),
                     p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
                     ol: ({ children }) => (
-                      <ol className="list-decimal list-outside mb-3 -ml-2 space-y-1">{children}</ol>
+                      <ol className="list-decimal list-outside mb-3 -ml-1 space-y-1">{children}</ol>
                     ),
                     ul: ({ children }) => (
                       <ul className="list-disc list-outside mb-3 -ml-2 space-y-1">{children}</ul>
@@ -162,10 +162,10 @@ export default function ChatBubble({ role, content, model, isThinking = false })
                       </div>
                     ),
                     thead: ({ children }) => (
-                      <thead className="bg-gray-100">{children}</thead>
+                      <thead className="bg-white">{children}</thead>
                     ),
                     th: ({ children }) => <th className="p-2 align-middle">{children}</th>,
-                    td: ({ children }) => <td className="p-2 border-b">{children}</td>,
+                    td: ({ children }) => <td className="p-2 first:border-r border-t">{children}</td>,
                     pre: ({ children }) => <>{children}</>,
                     code: ({ node, inline, className, children, ...props }) => {
                       const match = /language-(\w+)/.exec(className || "")
@@ -246,7 +246,7 @@ export default function ChatBubble({ role, content, model, isThinking = false })
 
                 {/* Model Badge */}
                 {model && (
-                  <span className="ml-1 text-[10px] text-gray-300 font-mono border border-gray-100 rounded px-1.5 py-0.5 select-none">
+                  <span className="ml-1 text-[10px] text-gray-400 font-mono border border-gray-200 rounded-sm px-1.5 py-0.5 select-none">
                     {formatModelName(model)}
                   </span>
                 )}

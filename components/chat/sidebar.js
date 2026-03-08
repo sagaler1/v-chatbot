@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { Button } from "@/components/ui/button"
 import { PlusCircle, MessageSquare, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
@@ -25,7 +25,7 @@ export default function Sidebar({ className, sessions, activeSessionId, onSelect
   const handleRename = (chat) => {
     setEditingId(chat.id)
     setEditTitle(chat.title)
-  };
+  }
 
   const handleSaveRename = async (id) => {
     if (!editTitle.trim()) {
@@ -37,13 +37,13 @@ export default function Sidebar({ className, sessions, activeSessionId, onSelect
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: editTitle })
-      });
+      })
       setEditingId(null)
       if (onRefresh) onRefresh()
     } catch (error) {
       console.error("Gagal rename", error)
     }
-  };
+  }
 
   const handleDelete = async (id) => {
     try {
@@ -53,13 +53,13 @@ export default function Sidebar({ className, sessions, activeSessionId, onSelect
     } catch (error) {
       console.error("Gagal delete", error)
     }
-  };
+  }
 
   return (
     <div className={cn("pb-12 h-screen border-r bg-gray-50/40 hidden md:flex flex-col 65", className)}>
-      <div className="space-y-4 py-4 flex-1 overflow-auto">
-        <div className="px-4 py-2">
-          <Button onClick={onNewChat} className="w-full justify-start gap-2" variant="default">
+      <div className="space-y-4 flex-1 overflow-auto">
+        <div className="px-4 py-8 sticky top-0 bg-white z-10">
+          <Button onClick={onNewChat} className="w-full justify-start rounded-2xl gap-2 cursor-pointer" variant="default">
             <PlusCircle className="h-4 w-4" />
             New Chat
           </Button>
@@ -78,8 +78,8 @@ export default function Sidebar({ className, sessions, activeSessionId, onSelect
                     value={editTitle}
                     onChange={(e) => setEditTitle(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleSaveRename(chat.id);
-                      if (e.key === 'Escape') setEditingId(null);
+                      if (e.key === 'Enter') handleSaveRename(chat.id)
+                      if (e.key === 'Escape') setEditingId(null)
                     }}
                     onBlur={() => handleSaveRename(chat.id)}
                     className="h-7 text-sm px-2"
@@ -144,5 +144,5 @@ export default function Sidebar({ className, sessions, activeSessionId, onSelect
         </div>
       </div>
     </div>
-  );
+  )
 }
